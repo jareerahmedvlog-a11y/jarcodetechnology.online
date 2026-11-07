@@ -935,9 +935,21 @@ export function AiWorkspace() {
             <div className="mx-auto max-w-3xl space-y-5">
               {messages.map((m, i) => (
                 <div key={`${m.role}-${i}`} className="space-y-2">
-                  <p className="text-[11px] font-semibold tracking-wide text-[var(--ai-muted)] uppercase">
-                    {m.role === "user" ? "You" : "JARCODE AI"}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    {m.role === "assistant" ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src="/images/logo-mark.png"
+                        alt="JARCODE AI"
+                        width={20}
+                        height={20}
+                        className="h-5 w-5 rounded-full object-cover ring-1 ring-[var(--ai-border)]"
+                      />
+                    ) : null}
+                    <p className="text-[11px] font-semibold tracking-wide text-[var(--ai-muted)] uppercase">
+                      {m.role === "user" ? "You" : "JARCODE AI"}
+                    </p>
+                  </div>
                   <div
                     className={cn(
                       "rounded-2xl px-4 py-3 text-[15px] leading-relaxed",

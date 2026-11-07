@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { Container } from "@/components/ui/Container";
@@ -12,13 +11,15 @@ function DashboardPreview() {
       <div className="relative overflow-hidden rounded-2xl border border-[#101828]/10 bg-white shadow-[0_24px_60px_-24px_rgba(16,24,40,0.35)]">
         <div className="flex items-center justify-between border-b border-[#101828]/08 px-4 py-3">
           <div className="flex items-center gap-2">
-            <Image
+            {/* Plain img avoids optimizer/broken-icon glitches inside the mock panel */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={siteConfig.logo.mark}
-              alt=""
+              alt={siteConfig.logo.alt}
               width={28}
               height={28}
-              className="h-7 w-7 rounded-full object-cover"
-              priority
+              className="h-7 w-7 rounded-full object-cover ring-1 ring-[#101828]/10 bg-[#070B16]"
+              decoding="async"
             />
             <div>
               <p className="text-xs font-bold text-[#101828]">JARCODE ERP</p>
