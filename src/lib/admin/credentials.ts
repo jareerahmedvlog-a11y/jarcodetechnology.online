@@ -12,6 +12,13 @@ export type AdminCredentials = {
 
 const FILE = dataRoot("admin", "credentials.json");
 
+function cleanEnv(value: string | undefined) {
+  return String(value || "")
+    .trim()
+    .replace(/^["']|["']$/g, "")
+    .replace(/^\uFEFF/, "");
+}
+
 function safeEqualString(a: string, b: string) {
   const bufA = Buffer.from(a);
   const bufB = Buffer.from(b);
@@ -20,11 +27,24 @@ function safeEqualString(a: string, b: string) {
 }
 
 export function adminEnvEmail() {
-  return (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
+  return cleanEnv(process.env.ADMIN_EMAIL).toLowerCase();
 }
 
 export function adminEnvPassword() {
-  return (process.env.ADMIN_PASSWORD || "").trim();
+  return cleanEnv(process.env.ADMIN_PASSWORD);
+}
+
+export function adminCredentialsConfigured() {
+  const email = adminEnvEmail();
+  const password = adminEnvPassword();
+  return {
+    emailConfigured: Boolean(email),
+    passwordConfigured: Boolean(password),
+    passwordLength: password.length,
+    emailMasked: email
+      ? `${email.slice(0, 3)}***${email.includes("@") ? email.slice(email.indexOf("@")) : ""}`
+      : "",
+  };
 }
 
 async function readFileCreds(): Promise<AdminCredentials | null> {
@@ -43,11 +63,10 @@ async function writeFileCreds(creds: AdminCredentials) {
     await fs.mkdir(path.dirname(FILE), { recursive: true });
     await fs.writeFile(FILE, JSON.stringify(creds, null, 2), "utf8");
   } catch {
-    /* Vercel /tmp may still fail intermittently — env auth remains valid */
+    /* ignore on serverless */
   }
 }
 
-/** Prefer live env credentials (works on Vercel). File hash is optional override after admin change. */
 export async function getAdminCredentials() {
   const email = adminEnvEmail();
   const password = adminEnvPassword();
@@ -62,43 +81,38 @@ export async function getAdminCredentials() {
     throw new Error("ADMIN_PASSWORD must be at least 8 characters.");
   }
 
-  const file = await readFileCreds();
-  // If file email matches env email, keep file hash (supports password change via admin UI).
-  if (file && file.email === email) {
-    return file;
-  }
-
   const creds: AdminCredentials = {
     email,
     passwordHash: hashPassword(password),
     updatedAt: new Date().toISOString(),
   };
+  // Keep a local cache copy when possible, but env remains source of truth.
   await writeFileCreds(creds);
-  return creds;
+  return { email, passwordHash: creds.passwordHash, updatedAt: creds.updatedAt };
 }
 
 export async function validateAdminLogin(email: string, password: string) {
-  const inputEmail = email.trim().toLowerCase();
-  const inputPassword = password;
+  const inputEmail = cleanEnv(email).toLowerCase();
+  const inputPassword = cleanEnv(password);
   if (!inputEmail || !inputPassword) return false;
 
   const envEmail = adminEnvEmail();
   const envPassword = adminEnvPassword();
 
-  // Always accept current env credentials first (fixes Vercel + password updates).
+  // On Vercel/production env vars are required and are the only source of truth.
   if (envEmail && envPassword) {
-    if (
+    return (
       safeEqualString(inputEmail, envEmail) &&
       safeEqualString(inputPassword, envPassword)
-    ) {
-      return true;
-    }
+    );
   }
 
+  // Local fallback only when env is missing.
   try {
-    const creds = await getAdminCredentials();
-    if (inputEmail !== creds.email) return false;
-    return verifyPassword(inputPassword, creds.passwordHash);
+    const file = await readFileCreds();
+    if (!file) return false;
+    if (inputEmail !== file.email) return false;
+    return verifyPassword(inputPassword, file.passwordHash);
   } catch {
     return false;
   }
@@ -109,38 +123,36 @@ export async function updateAdminCredentials(input: {
   newEmail?: string;
   newPassword?: string;
 }) {
-  const creds = await getAdminCredentials();
-  const okEnv =
-    Boolean(adminEnvEmail()) &&
-    (await validateAdminLogin(creds.email, input.currentPassword));
-  const okFile = verifyPassword(input.currentPassword, creds.passwordHash);
-  if (!okEnv && !okFile) {
-    throw new Error("Current password is incorrect.");
+  const currentEmail = adminEnvEmail();
+  if (!currentEmail || !(await validateAdminLogin(currentEmail, input.currentPassword))) {
+    throw new Error(
+      "Password change on Vercel must be done in Environment Variables (ADMIN_EMAIL / ADMIN_PASSWORD).",
+    );
   }
 
-  const nextEmail = (input.newEmail || creds.email).trim().toLowerCase();
+  const nextEmail = cleanEnv(input.newEmail || currentEmail).toLowerCase();
   if (!nextEmail || !nextEmail.includes("@")) {
     throw new Error("Enter a valid admin email.");
   }
-
-  let passwordHash = creds.passwordHash;
-  if (input.newPassword) {
-    if (input.newPassword.length < 8) {
-      throw new Error("New password must be at least 8 characters.");
-    }
-    passwordHash = hashPassword(input.newPassword);
+  if (input.newPassword && input.newPassword.length < 8) {
+    throw new Error("New password must be at least 8 characters.");
   }
 
-  const next: AdminCredentials = {
+  // File cache only — remind that Vercel env must be updated for persistence.
+  const password = cleanEnv(input.newPassword || adminEnvPassword());
+  await writeFileCreds({
     email: nextEmail,
-    passwordHash,
+    passwordHash: hashPassword(password),
     updatedAt: new Date().toISOString(),
+  });
+  return {
+    email: nextEmail,
+    updatedAt: new Date().toISOString(),
+    notice:
+      "For Vercel, also update ADMIN_EMAIL / ADMIN_PASSWORD in Environment Variables and Redeploy.",
   };
-  await writeFileCreds(next);
-  return { email: next.email, updatedAt: next.updatedAt };
 }
 
-/** Stable session secret fallback so Vercel works with only ADMIN_PASSWORD set. */
 export function deriveSessionSecretFallback() {
   const pass = adminEnvPassword();
   if (!pass) return "";
