@@ -2,6 +2,7 @@ import { createHmac, randomBytes, randomUUID } from "crypto";
 import { promises as fs } from "fs";
 import path from "path";
 import { videoPublicBaseUrl, videoRetentionHours } from "@/lib/jarcode-ai/config";
+import { dataRoot } from "@/lib/data-root";
 
 export type VideoJobStatus =
   | "queued"
@@ -41,8 +42,8 @@ export type VideoJob = {
   expiresAt: string;
 };
 
-const DIR = path.join(process.cwd(), "data", "ai", "videos");
-const MEDIA_DIR = path.join(process.cwd(), "data", "ai", "media-tokens");
+const DIR = dataRoot("ai", "videos");
+const MEDIA_DIR = dataRoot("ai", "media-tokens");
 
 function jobFile(id: string) {
   return path.join(DIR, `${id}.json`);

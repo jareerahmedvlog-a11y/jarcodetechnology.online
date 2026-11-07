@@ -2,8 +2,9 @@ import { randomUUID } from "crypto";
 import { promises as fs } from "fs";
 import path from "path";
 import { maxUploadBytes } from "@/lib/jarcode-ai/config";
+import { dataRoot } from "@/lib/data-root";
 
-const UPLOAD_DIR = path.join(process.cwd(), "data", "ai", "uploads");
+const UPLOAD_DIR = dataRoot("ai", "uploads");
 
 const ALLOWED_EXT = new Set([
   ".pdf",

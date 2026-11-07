@@ -8,8 +8,9 @@ import type {
   DemoProduct,
   DemoRecord,
 } from "@/lib/demos/types";
+import { dataRoot } from "@/lib/data-root";
 
-const DEMO_DIR = path.join(process.cwd(), "data", "demos");
+const DEMO_DIR = dataRoot("demos");
 const memory = new Map<DemoProduct, DemoDatabase>();
 
 function fileFor(product: DemoProduct) {

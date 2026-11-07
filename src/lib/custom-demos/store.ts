@@ -10,8 +10,9 @@ import type {
   CustomDemoStatus,
   CustomModuleDef,
 } from "@/lib/custom-demos/types";
+import { dataRoot } from "@/lib/data-root";
 
-const DIR = path.join(process.cwd(), "data", "custom-demos");
+const DIR = dataRoot("custom-demos");
 const INDEX = path.join(DIR, "index.json");
 
 type IndexEntry = {

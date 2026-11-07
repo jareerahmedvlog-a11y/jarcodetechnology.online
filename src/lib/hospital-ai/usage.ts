@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { dataRoot } from "@/lib/data-root";
 
 type UsageFile = {
   month: string; // YYYY-MM
@@ -8,7 +9,7 @@ type UsageFile = {
   dayRequests: number;
 };
 
-const FILE = path.join(process.cwd(), "data", "demos", "hospital-ai-usage.json");
+const FILE = dataRoot("demos", "hospital-ai-usage.json");
 
 function monthKey(d = new Date()) {
   return d.toISOString().slice(0, 7);

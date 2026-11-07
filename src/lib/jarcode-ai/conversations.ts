@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import type { AiActor } from "@/lib/jarcode-ai/actor";
+import { dataRoot } from "@/lib/data-root";
 
 export type ChatMessage = {
   role: "user" | "assistant" | "system";
@@ -18,7 +19,7 @@ export type Conversation = {
   messages: ChatMessage[];
 };
 
-const DIR = path.join(process.cwd(), "data", "ai", "conversations");
+const DIR = dataRoot("ai", "conversations");
 
 export function ownerKey(actor: AiActor, anonId?: string) {
   if (actor.role === "admin") return `admin:${actor.id}`;

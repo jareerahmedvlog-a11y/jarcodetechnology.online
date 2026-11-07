@@ -7,8 +7,9 @@ import type {
   DemoProduct,
   DemoRecord,
 } from "@/lib/demos/types";
+import { dataRoot } from "@/lib/data-root";
 
-const TENANT_ROOT = path.join(process.cwd(), "data", "tenants");
+const TENANT_ROOT = dataRoot("tenants");
 
 function fileFor(tenantId: string) {
   return path.join(TENANT_ROOT, tenantId, "erp.json");

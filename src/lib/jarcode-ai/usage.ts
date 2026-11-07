@@ -15,6 +15,7 @@ import {
   videoPerUserDailyLimit,
   voiceDailyLimit,
 } from "@/lib/jarcode-ai/config";
+import { dataRoot } from "@/lib/data-root";
 
 export type AiUsageKind =
   | "chat"
@@ -90,7 +91,7 @@ type UsageStore = {
   monthlyBudgetOverride?: number;
 };
 
-const FILE = path.join(process.cwd(), "data", "ai", "usage.json");
+const FILE = dataRoot("ai", "usage.json");
 
 function monthKey(d = new Date()) {
   return d.toISOString().slice(0, 7);

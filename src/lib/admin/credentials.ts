@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { hashPassword, verifyPassword } from "@/lib/auth/passwords";
+import { dataRoot } from "@/lib/data-root";
 
 export type AdminCredentials = {
   email: string;
@@ -8,7 +9,7 @@ export type AdminCredentials = {
   updatedAt: string;
 };
 
-const FILE = path.join(process.cwd(), "data", "admin", "credentials.json");
+const FILE = dataRoot("admin", "credentials.json");
 
 async function ensureMigrated(): Promise<AdminCredentials> {
   try {

@@ -9,8 +9,9 @@ import {
 import type { DemoProduct } from "@/lib/demos/types";
 import { createEmptyTenantDatabase } from "@/lib/tenants/store";
 import type { ClientAccount, ClientPublic, ClientStatus } from "@/lib/clients/types";
+import { dataRoot } from "@/lib/data-root";
 
-const FILE = path.join(process.cwd(), "data", "clients", "clients.json");
+const FILE = dataRoot("clients", "clients.json");
 
 function toPublic(client: ClientAccount): ClientPublic {
   const { passwordHash: _p, ...rest } = client;

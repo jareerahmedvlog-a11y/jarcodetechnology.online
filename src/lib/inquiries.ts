@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import { promises as fs } from "fs";
-import path from "path";
+import { dataRoot } from "@/lib/data-root";
 
 export type Inquiry = {
   id: string;
@@ -15,8 +15,8 @@ export type Inquiry = {
   source: "website" | "admin";
 };
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const DATA_FILE = path.join(DATA_DIR, "inquiries.json");
+const DATA_DIR = dataRoot();
+const DATA_FILE = dataRoot("inquiries.json");
 
 async function ensureStore() {
   await fs.mkdir(DATA_DIR, { recursive: true });
