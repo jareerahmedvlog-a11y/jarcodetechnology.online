@@ -3,7 +3,12 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BUSINESS_NICHES, type CustomModuleDef } from "@/lib/custom-demos/types";
+import { stashCustomDemoBundle } from "@/components/demos/CustomDemoClientLoader";
+import {
+  BUSINESS_NICHES,
+  type CustomDemoBundle,
+  type CustomModuleDef,
+} from "@/lib/custom-demos/types";
 import { cn } from "@/lib/utils";
 
 type Step = "info" | "modules" | "generating";
@@ -123,12 +128,14 @@ export function CustomDemoBuilder() {
         ok?: boolean;
         error?: string;
         url?: string;
+        bundle?: CustomDemoBundle;
       };
       if (!res.ok || !json.ok || !json.url) {
         setError(json.error || "Could not save demo.");
         setStep("modules");
         return;
       }
+      if (json.bundle) stashCustomDemoBundle(json.bundle);
       router.push(json.url);
       router.refresh();
     } catch {

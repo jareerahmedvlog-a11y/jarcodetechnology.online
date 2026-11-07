@@ -76,7 +76,34 @@ export function CustomDemoWorkspace({ initialConfig, initialData }: Props) {
         record?: CustomDemoRecord;
       };
       if (!res.ok || !json.ok || !json.record) {
-        setError(json.error || "Could not save record.");
+        // Keep demo usable even if serverless storage misses the write.
+        const now = new Date().toISOString();
+        const localRecord: CustomDemoRecord = {
+          id: editingId || crypto.randomUUID(),
+          createdAt: now,
+          updatedAt: now,
+          ...form,
+        };
+        setData((prev) => {
+          const rows = [...(prev[activeModule.id] || [])];
+          if (editingId) {
+            const idx = rows.findIndex((r) => r.id === editingId);
+            if (idx >= 0) {
+              rows[idx] = {
+                ...rows[idx],
+                ...form,
+                id: editingId,
+                updatedAt: now,
+              };
+            }
+          } else {
+            rows.unshift(localRecord);
+          }
+          return { ...prev, [activeModule.id]: rows };
+        });
+        setForm(emptyForm(activeModule.fields));
+        setEditingId("");
+        setMessage("Saved in this browser session.");
         return;
       }
       setData((prev) => {

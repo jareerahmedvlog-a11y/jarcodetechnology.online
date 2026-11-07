@@ -1,110 +1,36 @@
 import { randomUUID } from "crypto";
-import { promises as fs } from "fs";
-import path from "path";
 import { slugify } from "@/lib/custom-demos/sanitize";
 import type {
   CustomDemoBundle,
-  CustomDemoConfig,
   CustomDemoData,
   CustomDemoRecord,
-  CustomDemoStatus,
   CustomModuleDef,
 } from "@/lib/custom-demos/types";
-import { dataRoot } from "@/lib/data-root";
-
-const DIR = dataRoot("custom-demos");
-const INDEX = path.join(DIR, "index.json");
-
-type IndexEntry = {
-  id: string;
-  slug: string;
-  businessName: string;
-  niche: string;
-  status: CustomDemoStatus;
-  createdAt: string;
-  updatedAt: string;
-  moduleCount: number;
-};
-
-async function ensureDir() {
-  await fs.mkdir(DIR, { recursive: true });
-}
-
-function bundlePath(id: string) {
-  return path.join(DIR, `${id}.json`);
-}
-
-async function readIndex(): Promise<IndexEntry[]> {
-  try {
-    const raw = await fs.readFile(INDEX, "utf8");
-    const parsed = JSON.parse(raw) as IndexEntry[];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-async function writeIndex(entries: IndexEntry[]) {
-  await ensureDir();
-  await fs.writeFile(INDEX, JSON.stringify(entries, null, 2), "utf8");
-}
-
-function toIndex(config: CustomDemoConfig): IndexEntry {
-  return {
-    id: config.id,
-    slug: config.slug,
-    businessName: config.businessName,
-    niche: config.niche,
-    status: config.status,
-    createdAt: config.createdAt,
-    updatedAt: config.updatedAt,
-    moduleCount: config.modules.length,
-  };
-}
+import {
+  persistDeleteBundle,
+  persistListIndex,
+  persistLoadBundle,
+  persistSaveBundle,
+} from "@/lib/custom-demos/persistence";
 
 export async function listCustomDemoIndex() {
-  const entries = await readIndex();
-  return entries.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  return persistListIndex();
 }
 
 export async function loadCustomDemo(idOrSlug: string) {
-  await ensureDir();
-  const direct = bundlePath(idOrSlug);
-  try {
-    const raw = await fs.readFile(direct, "utf8");
-    return JSON.parse(raw) as CustomDemoBundle;
-  } catch {
-    /* try slug */
-  }
-  const index = await readIndex();
-  const hit = index.find((e) => e.slug === idOrSlug || e.id === idOrSlug);
-  if (!hit) return null;
-  try {
-    const raw = await fs.readFile(bundlePath(hit.id), "utf8");
-    return JSON.parse(raw) as CustomDemoBundle;
-  } catch {
-    return null;
-  }
+  return persistLoadBundle(idOrSlug);
 }
 
 export async function saveCustomDemo(bundle: CustomDemoBundle) {
-  await ensureDir();
-  await fs.writeFile(bundlePath(bundle.config.id), JSON.stringify(bundle, null, 2), "utf8");
-  const index = await readIndex();
-  const next = index.filter((e) => e.id !== bundle.config.id);
-  next.unshift(toIndex(bundle.config));
-  await writeIndex(next);
-  return bundle;
+  return persistSaveBundle(bundle);
 }
 
 export async function deleteCustomDemo(id: string) {
-  const index = await readIndex();
-  await writeIndex(index.filter((e) => e.id !== id));
-  await fs.unlink(bundlePath(id)).catch(() => undefined);
+  await persistDeleteBundle(id);
 }
 
 export async function uniqueSlug(base: string) {
-  const index = await readIndex();
+  const index = await persistListIndex();
   let slug = slugify(base);
   if (!index.some((e) => e.slug === slug)) return slug;
   for (let i = 2; i < 1000; i += 1) {

@@ -28,6 +28,15 @@ function clientIp(req: Request) {
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
+  const slug = url.searchParams.get("slug")?.trim();
+  if (slug) {
+    const bundle = await loadCustomDemo(slug);
+    if (!bundle || bundle.config.status !== "published") {
+      return Response.json({ ok: false, error: "Demo not found." }, { status: 404 });
+    }
+    return Response.json({ ok: true, bundle });
+  }
+
   const admin = await isAdminAuthenticated();
   if (url.searchParams.get("admin") === "1") {
     if (!admin) {
@@ -125,12 +134,14 @@ export async function POST(req: Request) {
   };
 
   const data = seedSampleData(modules);
-  await saveCustomDemo({ config, data });
+  const bundle = { config, data };
+  await saveCustomDemo(bundle);
 
   return Response.json({
     ok: true,
     demo: config,
+    bundle,
     url: `/demo/${slug}`,
-    notice: "Demo saved permanently on the server. Use fictional data only.",
+    notice: "Demo ready. Visitors can open this link and add fictional sample data.",
   });
 }
