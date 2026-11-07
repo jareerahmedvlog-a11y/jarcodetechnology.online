@@ -1,4 +1,5 @@
 import { createHmac, timingSafeEqual } from "crypto";
+import { deriveSessionSecretFallback } from "@/lib/admin/credentials";
 
 function secret() {
   const fromEnv =
@@ -6,9 +7,11 @@ function secret() {
     process.env.ADMIN_SESSION_SECRET?.trim() ||
     "";
   if (fromEnv) return fromEnv;
+  const derived = deriveSessionSecretFallback();
+  if (derived) return derived;
   if (process.env.VERCEL || process.env.NODE_ENV === "production") {
     throw new Error(
-      "AUTH_SESSION_SECRET (or ADMIN_SESSION_SECRET) must be set in production.",
+      "Set AUTH_SESSION_SECRET (or ADMIN_PASSWORD) in production environment variables.",
     );
   }
   // Local-only fallback — never used on Vercel/production

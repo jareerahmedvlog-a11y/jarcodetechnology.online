@@ -29,15 +29,30 @@ function clientIp(req: Request) {
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const slug = url.searchParams.get("slug")?.trim();
+  const admin = await isAdminAuthenticated();
+
   if (slug) {
     const bundle = await loadCustomDemo(slug);
-    if (!bundle || bundle.config.status !== "published") {
+    if (!bundle) {
+      return Response.json({ ok: false, error: "Demo not found." }, { status: 404 });
+    }
+    if (!admin && bundle.config.status !== "published") {
       return Response.json({ ok: false, error: "Demo not found." }, { status: 404 });
     }
     return Response.json({ ok: true, bundle });
   }
 
-  const admin = await isAdminAuthenticated();
+  if (url.searchParams.get("gallery") === "1") {
+    const index = await listCustomDemoIndex();
+    const rows = admin ? index : index.filter((e) => e.status === "published");
+    return Response.json({
+      ok: true,
+      demos: rows,
+      total: rows.length,
+      managing: admin,
+    });
+  }
+
   if (url.searchParams.get("admin") === "1") {
     if (!admin) {
       return Response.json({ ok: false, error: "Unauthorized." }, { status: 401 });

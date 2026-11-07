@@ -4,6 +4,7 @@ import { demoProducts } from "@/config/demos";
 import { Container } from "@/components/ui/Container";
 import { DemoWarning } from "@/components/demos/DemoWarning";
 import { CreateDemoStickyCta } from "@/components/demos/CreateDemoStickyCta";
+import { PublicMadeDemos } from "@/components/demos/PublicMadeDemos";
 
 export const metadata: Metadata = {
   title: "Create Your Demo",
@@ -109,6 +110,8 @@ export default function CreateYourDemoPage() {
             </div>
           </article>
         </div>
+
+        <PublicMadeDemos />
       </Container>
       <CreateDemoStickyCta />
     </div>
