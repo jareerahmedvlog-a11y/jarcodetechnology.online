@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" fill="none" role="img" aria-label="Jarcode Technology">
+  <defs>
+    <linearGradient id="jcLogo" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6"/>
+      <stop offset="0.5" stop-color="#6366F1"/>
+      <stop offset="1" stop-color="#A855F7"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="#070B16"/>
+  <path stroke="url(#jcLogo)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M18 42V22l14 20 14-20v20"/>
+  <circle cx="32" cy="18" r="3" fill="url(#jcLogo)"/>
+  <path stroke="url(#jcLogo)" stroke-width="1.5" stroke-opacity="0.55" d="M12 50h40"/>
+  <text x="80" y="30" fill="#F8FAFC" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" letter-spacing="0.2">Jarcode</text>
+  <text x="80" y="50" fill="#94A3B8" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="14" font-weight="500" letter-spacing="2.4">TECHNOLOGY</text>
+</svg>

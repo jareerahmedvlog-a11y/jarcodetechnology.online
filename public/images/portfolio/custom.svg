@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <rect width="800" height="500" fill="#0B1224"/>
+  <rect x="70" y="80" width="660" height="320" rx="18" fill="#111827" stroke="#1E293B"/>
+  <path d="M140 280 L220 180 L300 240 L400 140 L500 220 L580 160 L660 240" stroke="url(#g)" stroke-width="3" fill="none"/>
+  <defs>
+    <linearGradient id="g" x1="140" y1="140" x2="660" y2="280">
+      <stop stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#A855F7"/>
+    </linearGradient>
+  </defs>
+  <circle cx="220" cy="180" r="6" fill="#3B82F6"/>
+  <circle cx="400" cy="140" r="6" fill="#6366F1"/>
+  <circle cx="580" cy="160" r="6" fill="#A855F7"/>
+  <text x="400" y="470" text-anchor="middle" fill="#64748B" font-family="Segoe UI, sans-serif" font-size="14">Custom Software  Design Placeholder</text>
+</svg>

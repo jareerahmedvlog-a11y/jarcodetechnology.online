@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 600" fill="none" role="img" aria-label="Founder photo placeholder">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="480" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1224"/>
+      <stop offset="1" stop-color="#151B33"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="80" y1="80" x2="400" y2="480" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#A855F7"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="600" fill="url(#bg)"/>
+  <circle cx="240" cy="230" r="110" stroke="url(#ring)" stroke-width="3" fill="#111827"/>
+  <circle cx="240" cy="200" r="48" fill="#334155"/>
+  <path d="M150 340c20-55 70-85 90-85s70 30 90 85v40H150v-40z" fill="#334155"/>
+  <text x="240" y="430" text-anchor="middle" fill="#F8FAFC" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="28" font-weight="700">Jareer Ahmed</text>
+  <text x="240" y="465" text-anchor="middle" fill="#94A3B8" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16">Founder &amp; CEO</text>
+  <text x="240" y="540" text-anchor="middle" fill="#64748B" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13">Replace with /images/founder.jpg</text>
+</svg>

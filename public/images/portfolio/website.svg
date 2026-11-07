@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <rect width="800" height="500" fill="#0B1224"/>
+  <rect x="80" y="70" width="640" height="340" rx="16" fill="#111827" stroke="#1E293B"/>
+  <rect x="80" y="70" width="640" height="48" rx="16" fill="#0F172A"/>
+  <circle cx="110" cy="94" r="6" fill="#EF4444"/>
+  <circle cx="132" cy="94" r="6" fill="#EAB308"/>
+  <circle cx="154" cy="94" r="6" fill="#22C55E"/>
+  <rect x="110" y="150" width="280" height="18" rx="9" fill="#3B82F6" opacity="0.8"/>
+  <rect x="110" y="186" width="220" height="10" rx="5" fill="#475569"/>
+  <rect x="110" y="210" width="180" height="10" rx="5" fill="#334155"/>
+  <rect x="110" y="250" width="120" height="36" rx="10" fill="#6366F1"/>
+  <rect x="460" y="150" width="220" height="200" rx="14" fill="#0F172A" stroke="#1E293B"/>
+  <text x="400" y="470" text-anchor="middle" fill="#64748B" font-family="Segoe UI, sans-serif" font-size="14">Websites  Design Placeholder</text>
+</svg>

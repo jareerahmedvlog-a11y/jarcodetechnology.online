@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <rect width="800" height="500" fill="#0B1224"/>
+  <rect x="120" y="160" width="140" height="90" rx="14" fill="#111827" stroke="#3B82F6" stroke-opacity="0.5"/>
+  <rect x="330" y="160" width="140" height="90" rx="14" fill="#111827" stroke="#6366F1" stroke-opacity="0.5"/>
+  <rect x="540" y="160" width="140" height="90" rx="14" fill="#111827" stroke="#A855F7" stroke-opacity="0.5"/>
+  <path d="M260 205 H330 M470 205 H540" stroke="#475569" stroke-width="2" stroke-dasharray="6 6"/>
+  <circle cx="295" cy="205" r="8" fill="#3B82F6"/>
+  <circle cx="505" cy="205" r="8" fill="#A855F7"/>
+  <text x="190" y="215" text-anchor="middle" fill="#94A3B8" font-family="Segoe UI, sans-serif" font-size="14">Input</text>
+  <text x="400" y="215" text-anchor="middle" fill="#94A3B8" font-family="Segoe UI, sans-serif" font-size="14">Process</text>
+  <text x="610" y="215" text-anchor="middle" fill="#94A3B8" font-family="Segoe UI, sans-serif" font-size="14">Output</text>
+  <text x="400" y="470" text-anchor="middle" fill="#64748B" font-family="Segoe UI, sans-serif" font-size="14">Automation  Design Placeholder</text>
+</svg>
